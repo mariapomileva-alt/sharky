@@ -267,6 +267,38 @@
     .results-section .section-head h2 {
       margin: 0;
     }
+    .results-team-roster {
+      margin: 0 0 1rem;
+    }
+    .results-team-roster > p {
+      margin: 0 0 0.45rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .results-team-roster ul {
+      margin: 0;
+      padding: 0.65rem 1rem 0.65rem 1.35rem;
+      background: rgba(255, 255, 255, 0.55);
+      border-radius: 14px;
+      border: 1px solid rgba(10, 22, 40, 0.07);
+      font-size: 0.88rem;
+      line-height: 1.45;
+      color: var(--accent-3);
+      columns: 2;
+      column-gap: 1.75rem;
+    }
+    @media (max-width: 520px) {
+      .results-team-roster ul {
+        columns: 1;
+      }
+    }
+    .results-team-roster li {
+      break-inside: avoid;
+      padding: 0.12rem 0;
+    }
     a.btn-compact {
       padding: 0.45rem 0.85rem;
       font-size: 0.82rem;
@@ -742,6 +774,22 @@
       <div class="section-head">
         <h2>Weekend results <span class="tag">cups</span></h2>
         <a class="btn btn-compact" href="admin-results.html">Add</a>
+      </div>
+      <div class="results-team-roster" aria-label="Team roster for results">
+        <p>Team roster</p>
+        <ul>
+          <li>Danik</li>
+          <li>Mark</li>
+          <li>Mihails</li>
+          <li>Aleksandrs</li>
+          <li>Marks G</li>
+          <li>mini Mark</li>
+          <li>Anastasiya</li>
+          <li>Ksenija</li>
+          <li>Edvards</li>
+          <li>Toms</li>
+          <li>Kira</li>
+        </ul>
       </div>
       <div id="weekend-results-root" class="results-grid"></div>
       <p class="hint">Cards load from this browser. In <a class="inline-link" href="admin-results.html">admin</a> you can import or export JSON to share the same list between devices.</p>
