@@ -264,6 +264,11 @@
       height: 1rem;
       accent-color: var(--accent);
     }
+    .race-bus-split {
+      margin: 1.35rem 0 1.1rem;
+      border: 0;
+      border-top: 1px solid rgba(10, 22, 40, 0.1);
+    }
     @media (prefers-reduced-motion: reduce) {
       a.btn:hover { transform: none; }
     }
@@ -909,7 +914,7 @@
       </table>
     </section>
 
-    <section>
+    <section class="span-2">
       <h2>Race entries <span class="tag">checklist</span></h2>
       <table>
         <thead>
@@ -921,9 +926,10 @@
         </tbody>
       </table>
       <p class="hint">Checkboxes do not sync across devices. Use a shared Google Sheet or a signup form for the whole team.</p>
-    </section>
 
-    <section class="span-2 bus-section bus-section--compact" aria-labelledby="bus-title">
+      <div class="race-bus-split" role="presentation"></div>
+
+      <div class="bus-section bus-section--compact" aria-labelledby="bus-title">
       <div class="section-head">
         <h2 id="bus-title">Trip bus <span class="tag">9 seats</span> <span class="tag" id="bus-cloud-tag" hidden>live</span></h2>
         <div class="bus-head-actions">
@@ -972,6 +978,7 @@
         </div>
       </div>
       <p class="hint" id="bus-sync-hint"></p>
+      </div>
     </section>
   </main>
 
