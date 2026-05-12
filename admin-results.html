@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sharky Triathlon Team — results admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #e9f5fc;
+      --ink: #0c0c0c;
+      --muted: #3d4f5c;
+      --accent: #ff6b2d;
+      --accent-3: #0a1628;
+      --shark-blue: #9fdcf5;
+      --card: #fff;
+      --radius: 16px;
+      --max: 560px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      padding: clamp(1rem, 4vw, 2rem);
+    }
+    .wrap { max-width: var(--max); margin: 0 auto; }
+    h1 {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      margin: 0 0 0.5rem;
+    }
+    .sub { color: var(--muted); font-size: 0.9rem; margin: 0 0 1.25rem; }
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(10, 22, 40, 0.08);
+      box-shadow: 0 8px 28px rgba(10, 22, 40, 0.06);
+    }
+    label { display: block; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0.75rem 0 0.35rem; }
+    label:first-of-type { margin-top: 0; }
+    input, textarea {
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border-radius: 10px;
+      border: 1px solid #c5d4dc;
+      font: inherit;
+    }
+    textarea { min-height: 4rem; resize: vertical; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+    @media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } }
+    button, .linkbtn {
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 0.6rem 1rem;
+      border: none;
+    }
+    .btn-primary { background: var(--accent); color: #fff; margin-top: 1rem; width: 100%; }
+    .btn-dark { background: var(--accent-3); color: #fff; }
+    .btn-ghost { background: transparent; color: var(--accent-3); border: 2px solid var(--accent-3); }
+    .btn-danger { background: #fff; color: #b00020; border: 1px solid #e0c4c8; padding: 0.35rem 0.6rem; font-size: 0.85rem; }
+    .entry {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #eee;
+      font-size: 0.9rem;
+    }
+    .entry:last-child { border-bottom: 0; }
+    .entry strong { display: block; font-family: "Bricolage Grotesque", sans-serif; }
+    .muted { color: var(--muted); font-size: 0.82rem; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+    .toolbar button, .toolbar .linkbtn { width: auto; flex: 1; min-width: 8rem; }
+    .err { color: #b00020; font-size: 0.85rem; margin-top: 0.5rem; }
+    .ok { color: #1b5e20; font-size: 0.85rem; margin-top: 0.5rem; }
+    a { color: var(--accent-3); font-weight: 600; }
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+    .row-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+      color: var(--ink);
+    }
+    .row-check input { width: auto; margin-top: 0.2rem; }
+    .sync-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0.75rem 0 1rem;
+    }
+    .sync-bar button { flex: 1; min-width: 7rem; }
+    .btn-small { padding: 0.45rem 0.75rem; font-size: 0.82rem; width: 100%; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p><a href="index.html">← Back to hub</a></p>
+    <h1>Sharky Triathlon Team</h1>
+    <p class="sub">Add cups and placings. Set <code>ADMIN_PIN</code> in this file before sharing the page.</p>
+
+    <div id="gate" class="card">
+      <label for="pin">Access code</label>
+      <input id="pin" type="password" autocomplete="current-password" maxlength="64" />
+      <button type="button" class="btn-primary" id="unlockBtn">Sign in</button>
+      <p class="err" id="gateErr" hidden>Wrong code.</p>
+    </div>
+
+    <div id="panel" hidden>
+      <div class="card">
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-size:1.1rem;margin:0 0 1rem;">New entry</h2>
+        <div class="row2">
+          <div>
+            <label for="firstName">First name</label>
+            <input id="firstName" maxlength="80" />
+          </div>
+          <div>
+            <label for="lastName">Last name</label>
+            <input id="lastName" maxlength="80" />
+          </div>
+        </div>
+        <label for="stage">Date / stage</label>
+        <input id="stage" maxlength="120" placeholder="e.g. 7–8 June, Riga" />
+        <label for="group">Distance / wave</label>
+        <input id="group" maxlength="120" placeholder="Sprint kids" />
+        <label for="result">Place / award</label>
+        <textarea id="result" maxlength="500" placeholder="3rd place, cup for …"></textarea>
+        <label for="photoUrl">Photo link (optional)</label>
+        <input id="photoUrl" type="url" maxlength="4000" placeholder="https://…" />
+        <label for="photoFile">Or upload from device (jpg/png, ~400 KB max)</label>
+        <input id="photoFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
+        <button type="button" class="btn-primary" id="addBtn">Save entry</button>
+        <p class="err" id="formErr" hidden></p>
+        <p class="ok" id="formOk" hidden>Saved. Open the hub in another tab to see the card update.</p>
+      </div>
+
+      <div class="card">
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-size:1.1rem;margin:0 0 0.75rem;">Team list &amp; sync</h2>
+        <p class="muted" style="margin:0 0 0.75rem;">Coach: after the weekend, download JSON and drop it in chat. Parents: <strong>Import</strong> the file or <strong>paste</strong> the message text below. Turn off “replace all” to merge without losing entries that use different IDs.</p>
+        <div class="sync-bar">
+          <button type="button" class="btn-dark" id="exportBtn">Download JSON</button>
+          <button type="button" class="btn-ghost" id="importBtn">Import file</button>
+        </div>
+        <button type="button" class="btn-ghost btn-small" id="copyHubBtn">Copy Sharky Triathlon Team hub link</button>
+        <label for="importPaste">Paste JSON from chat</label>
+        <textarea id="importPaste" class="mono" rows="6" placeholder='[ { "id": "…", "firstName": "…" } ]'></textarea>
+        <label class="row-check" for="importReplace">
+          <input type="checkbox" id="importReplace" checked />
+          Replace entire list (uncheck to merge by entry id)
+        </label>
+        <button type="button" class="btn-primary" id="pasteImportBtn" style="margin-top:0.65rem;">Apply pasted JSON</button>
+        <input id="importFile" type="file" accept="application/json,.json" hidden />
+        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-size:1.05rem;margin:1.25rem 0 0.6rem;">All entries</h2>
+        <div id="list"></div>
+        <p class="muted" style="margin-top:1rem;">Stored in this browser only (localStorage). For one shared wall, the coach’s export is the source of truth each week.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="results-storage.js"></script>
+  <script>
+    /* Change this PIN before publishing */
+    var ADMIN_PIN = "shark24";
+
+    var SESSION_KEY = "tri_admin_session";
+    var MAX_FILE_B64 = 450000;
+
+    function newId() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return "id-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9);
+    }
+
+    function unlocked() {
+      return sessionStorage.getItem(SESSION_KEY) === "1";
+    }
+
+    function setUnlocked() {
+      sessionStorage.setItem(SESSION_KEY, "1");
+    }
+
+    function showPanel() {
+      document.getElementById("gate").hidden = true;
+      document.getElementById("panel").hidden = false;
+      renderList();
+    }
+
+    function renderList() {
+      var list = document.getElementById("list");
+      var arr = window.TriResults.load();
+      if (!arr.length) {
+        list.innerHTML = '<p class="muted">Nothing here yet.</p>';
+        return;
+      }
+      list.innerHTML = arr
+        .map(function (e) {
+          var name = (e.firstName || "") + " " + (e.lastName || "");
+          var meta = [e.stage, e.group].filter(Boolean).join(" · ");
+          return (
+            '<div class="entry" data-id="' +
+            escapeAttr(e.id) +
+            '"><div><strong>' +
+            escapeHtml(name.trim() || "No name") +
+            "</strong>" +
+            (meta ? '<span class="muted"><br />' + escapeHtml(meta) + "</span>" : "") +
+            "<br />" +
+            escapeHtml(e.result || "") +
+            "</div><button type=\"button\" class=\"btn-danger\" data-del=\"" +
+            escapeAttr(e.id) +
+            '">Delete</button></div>'
+          );
+        })
+        .join("");
+      list.querySelectorAll("[data-del]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = btn.getAttribute("data-del");
+          var next = window.TriResults.load().filter(function (x) {
+            return x.id !== id;
+          });
+          window.TriResults.save(next);
+          renderList();
+        });
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function escapeAttr(s) {
+      return escapeHtml(s).replace(/'/g, "&#39;");
+    }
+
+    function cleanEntry(x) {
+      return {
+        id: x.id || newId(),
+        firstName: String(x.firstName || ""),
+        lastName: String(x.lastName || ""),
+        stage: String(x.stage || ""),
+        group: String(x.group || ""),
+        result: String(x.result || ""),
+        photo: String(x.photo || "")
+      };
+    }
+
+    function mergeById(existing, incoming) {
+      var ids = {};
+      incoming.forEach(function (x) {
+        ids[x.id] = true;
+      });
+      var kept = existing.filter(function (x) {
+        return !ids[x.id];
+      });
+      return incoming.concat(kept);
+    }
+
+    function extractJsonMaybe(s) {
+      s = String(s).trim();
+      var fence = s.match(/```(?:json)?\s*([\s\S]*?)```/i);
+      if (fence) return fence[1].trim();
+      return s;
+    }
+
+    function applyImportFromText(text, replaceAll) {
+      text = extractJsonMaybe(text);
+      var data = JSON.parse(text);
+      if (!Array.isArray(data)) throw new Error("JSON must be an array of entries.");
+      var cleaned = data.map(cleanEntry);
+      var existing = window.TriResults.load();
+      var next = replaceAll ? cleaned : mergeById(existing, cleaned);
+      window.TriResults.save(next);
+      renderList();
+      return next.length;
+    }
+
+    function readFileAsDataUrl(file) {
+      return new Promise(function (resolve, reject) {
+        var r = new FileReader();
+        r.onload = function () {
+          resolve(r.result);
+        };
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+    }
+
+    document.getElementById("unlockBtn").addEventListener("click", function () {
+      var v = document.getElementById("pin").value;
+      var err = document.getElementById("gateErr");
+      if (v === ADMIN_PIN) {
+        err.hidden = true;
+        setUnlocked();
+        showPanel();
+      } else {
+        err.hidden = false;
+      }
+    });
+
+    document.getElementById("pin").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") document.getElementById("unlockBtn").click();
+    });
+
+    document.getElementById("addBtn").addEventListener("click", function () {
+      var formErr = document.getElementById("formErr");
+      var formOk = document.getElementById("formOk");
+      formErr.hidden = true;
+      formOk.hidden = true;
+      var firstName = document.getElementById("firstName").value.trim();
+      var lastName = document.getElementById("lastName").value.trim();
+      var stage = document.getElementById("stage").value.trim();
+      var group = document.getElementById("group").value.trim();
+      var result = document.getElementById("result").value.trim();
+      var photoUrl = document.getElementById("photoUrl").value.trim();
+      var fileInput = document.getElementById("photoFile");
+
+      if (!firstName && !lastName) {
+        formErr.textContent = "Enter a first or last name.";
+        formErr.hidden = false;
+        return;
+      }
+      if (!result) {
+        formErr.textContent = "Enter a place or award.";
+        formErr.hidden = false;
+        return;
+      }
+
+      var photo = photoUrl;
+      var work = Promise.resolve(photo);
+
+      if (fileInput.files && fileInput.files[0]) {
+        work = readFileAsDataUrl(fileInput.files[0]).then(function (dataUrl) {
+          if (dataUrl.length > MAX_FILE_B64) {
+            throw new Error("File too large. Compress the image or use a link.");
+          }
+          return dataUrl;
+        });
+      }
+
+      work
+        .then(function (finalPhoto) {
+          if (fileInput.files && fileInput.files[0]) photo = finalPhoto;
+          var arr = window.TriResults.load();
+          arr.unshift({
+            id: newId(),
+            firstName: firstName,
+            lastName: lastName,
+            stage: stage,
+            group: group,
+            result: result,
+            photo: photo || ""
+          });
+          window.TriResults.save(arr);
+          document.getElementById("firstName").value = "";
+          document.getElementById("lastName").value = "";
+          document.getElementById("stage").value = "";
+          document.getElementById("group").value = "";
+          document.getElementById("result").value = "";
+          document.getElementById("photoUrl").value = "";
+          fileInput.value = "";
+          formOk.hidden = false;
+          renderList();
+        })
+        .catch(function (e) {
+          formErr.textContent = e.message || "Could not read the file.";
+          formErr.hidden = false;
+        });
+    });
+
+    document.getElementById("exportBtn").addEventListener("click", function () {
+      var raw = JSON.stringify(window.TriResults.load(), null, 2);
+      var blob = new Blob([raw], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "sharky-triathlon-team-results.json";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    document.getElementById("importBtn").addEventListener("click", function () {
+      document.getElementById("importFile").click();
+    });
+
+    document.getElementById("importFile").addEventListener("change", function () {
+      var f = this.files && this.files[0];
+      if (!f) return;
+      var replaceAll = document.getElementById("importReplace").checked;
+      var reader = new FileReader();
+      reader.onload = function () {
+        try {
+          var n = applyImportFromText(reader.result, replaceAll);
+          alert("Import complete: " + n + " entries" + (replaceAll ? " (replaced list)." : " (merged)."));
+        } catch (e) {
+          alert("Import failed: " + e.message);
+        }
+      };
+      reader.readAsText(f);
+      this.value = "";
+    });
+
+    document.getElementById("pasteImportBtn").addEventListener("click", function () {
+      var raw = document.getElementById("importPaste").value.trim();
+      if (!raw) {
+        alert("Paste JSON first.");
+        return;
+      }
+      try {
+        var replaceAll = document.getElementById("importReplace").checked;
+        var n = applyImportFromText(raw, replaceAll);
+        alert("Import complete: " + n + " entries" + (replaceAll ? " (replaced list)." : " (merged)."));
+        document.getElementById("importPaste").value = "";
+      } catch (e) {
+        alert("Import failed: " + e.message);
+      }
+    });
+
+    document.getElementById("copyHubBtn").addEventListener("click", function () {
+      var hub = new URL("index.html", window.location.href).href;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(hub).then(
+          function () {
+            alert("Hub link copied:\n" + hub);
+          },
+          function () {
+            window.prompt("Copy this link:", hub);
+          }
+        );
+      } else {
+        window.prompt("Copy this link:", hub);
+      }
+    });
+
+    if (unlocked()) showPanel();
+  </script>
+</body>
+</html>

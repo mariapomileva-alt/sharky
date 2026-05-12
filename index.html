@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sharky Triathlon Team — calendar, photos, results</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #e4f2fa;
+      --bg-deep: #d4e9f5;
+      --ink: #0c0c0c;
+      --muted: #3d4f5c;
+      --accent: #ff6b2d;
+      --accent-2: #7ec8e8;
+      --accent-3: #0a1628;
+      --shark-blue: #9fdcf5;
+      --card: #fff;
+      --radius: 20px;
+      --shadow: 0 4px 24px rgba(10, 22, 40, 0.06), 0 14px 44px rgba(10, 22, 40, 0.07);
+      --shadow-hover: 0 8px 32px rgba(10, 22, 40, 0.1), 0 20px 50px rgba(255, 107, 45, 0.08);
+      --max: 1100px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      background: radial-gradient(120% 80% at 50% -10%, #fff 0%, var(--bg) 45%, var(--bg-deep) 100%);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+    .grain {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: 0;
+    }
+    .hero {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(180deg, #cfe8f5 0%, #e4f3fb 55%, var(--bg) 100%);
+      padding: clamp(0.45rem, 1.4vw, 0.7rem) clamp(0.85rem, 2.5vw, 1rem) clamp(0.55rem, 1.6vw, 0.85rem);
+      border-bottom: 1px solid rgba(10, 22, 40, 0.06);
+    }
+    .hero-visual {
+      position: relative;
+      max-width: min(300px, 86vw);
+      margin: 0 auto;
+    }
+    .hero-logo {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+    .hero-tagline {
+      text-align: center;
+      max-width: min(34rem, 94vw);
+      margin: 0.25rem auto 0;
+      padding: 0 0.35rem;
+    }
+    .hero-tagline .eyebrow {
+      color: var(--accent);
+    }
+    .hero-title {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(0.88rem, 2.4vw + 0.35rem, 1.2rem);
+      line-height: 1.15;
+      margin: 0.15rem 0 0;
+      color: var(--accent-3);
+      text-wrap: balance;
+    }
+    header.intro {
+      position: relative;
+      z-index: 1;
+      padding: clamp(0.75rem, 2.5vw, 1.15rem) clamp(1.1rem, 3.5vw, 1.75rem) 0.25rem;
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+    .eyebrow {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0;
+    }
+    h1.page-title {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(1rem, 2.4vw + 0.4rem, 1.35rem);
+      line-height: 1.15;
+      margin: 0.3rem 0 0.45rem;
+      max-width: 52ch;
+      color: var(--ink);
+      text-wrap: balance;
+    }
+    .lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 46ch;
+      margin: 0;
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 2rem) 4rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+    @media (min-width: 900px) {
+      main {
+        grid-template-columns: 1fr 1fr;
+        align-items: start;
+      }
+      .span-2 { grid-column: span 2; }
+    }
+    section {
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.4rem 1.55rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      background: linear-gradient(180deg, #fff 0%, #fafcfe 100%);
+    }
+    section h2 {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.15rem;
+      margin: 0 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.45rem;
+      border-radius: 6px;
+      background: var(--shark-blue);
+      color: var(--accent-3);
+    }
+    a.btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-weight: 600;
+      text-decoration: none;
+      color: #fff;
+      background: var(--accent);
+      padding: 0.65rem 1rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      margin: 0.25rem 0.5rem 0.25rem 0;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    a.btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 28px rgba(255, 107, 45, 0.35);
+    }
+    a.btn.secondary {
+      background: var(--accent-3);
+    }
+    a.btn.secondary:hover {
+      box-shadow: 0 8px 24px rgba(10, 22, 40, 0.35);
+    }
+    a.btn.ghost {
+      background: transparent;
+      color: var(--accent-3);
+      border: 2px solid var(--accent-3);
+    }
+    .links { margin-top: 0.5rem; }
+    .hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+    }
+    iframe.cal {
+      width: 100%;
+      min-height: 420px;
+      border: 0;
+      border-radius: 14px;
+      background: #eef4f8;
+      box-shadow: inset 0 0 0 1px rgba(10, 22, 40, 0.06);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.55rem 0.4rem;
+      border-bottom: 1px solid #eee;
+    }
+    th {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+    }
+    .check {
+      width: 1rem;
+      height: 1rem;
+      accent-color: var(--accent);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      a.btn:hover { transform: none; }
+      .result-card:hover { transform: none; }
+    }
+    .results-section .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .results-section .section-head h2 {
+      margin: 0;
+    }
+    a.btn-compact {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.82rem;
+      margin: 0;
+    }
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    @media (min-width: 640px) {
+      .results-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .results-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 1.25rem 1rem;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 14px;
+      border: 1px dashed rgba(10, 22, 40, 0.15);
+    }
+    .results-empty-sub {
+      margin: 0.5rem 0 0;
+      font-size: 0.92rem;
+    }
+    a.inline-link {
+      color: var(--accent-3);
+      font-weight: 600;
+    }
+    .result-card {
+      border: 1px solid rgba(10, 22, 40, 0.07);
+      border-radius: 18px;
+      padding: 1.1rem 1.2rem;
+      background: linear-gradient(165deg, #fff 0%, #f6fbfe 100%);
+      box-shadow: 0 2px 12px rgba(10, 22, 40, 0.04);
+      border-left: 4px solid var(--accent);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .result-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
+    }
+    .result-card-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
+    .result-avatar {
+      flex: 0 0 60px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(150deg, var(--shark-blue), #d8eef8);
+      border: 2px dashed rgba(10, 22, 40, 0.18);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .result-avatar--photo {
+      border-style: solid;
+      border-color: rgba(10, 22, 40, 0.12);
+    }
+    .result-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .result-initials {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--accent-3);
+      user-select: none;
+    }
+    .result-body {
+      flex: 1;
+      min-width: 0;
+    }
+    .result-name {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      margin: 0 0 0.2rem;
+      line-height: 1.2;
+    }
+    .result-meta {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: 0 0 0.35rem;
+    }
+    .result-prize {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin: 0;
+      color: var(--ink);
+    }
+    .result-trophy {
+      flex-shrink: 0;
+      align-self: center;
+      opacity: 0.92;
+    }
+    .trophy-doodle {
+      width: 38px;
+      height: auto;
+      display: block;
+    }
+    .bus-section .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    .bus-head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
+    .bus-section .section-head h2 {
+      margin: 0;
+    }
+    .bus-board {
+      max-width: 28rem;
+      margin: 0 auto;
+    }
+    .bus-date-block {
+      margin-bottom: 1.25rem;
+    }
+    .bus-date-block label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+    .bus-date-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .bus-date-show {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--accent-3);
+      text-align: center;
+      margin: 0.35rem 0 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 12px;
+      border: 1px dashed rgba(10, 22, 40, 0.15);
+    }
+    .bus-date-show[hidden] {
+      display: none !important;
+    }
+    .bus-date-controls input[type="text"] {
+      flex: 1;
+      min-width: 12rem;
+      padding: 0.55rem 0.7rem;
+      border-radius: 12px;
+      border: 1px solid #c5d4dc;
+      font: inherit;
+    }
+    button.bus-mini {
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 0.5rem 0.85rem;
+      border: none;
+      font-size: 0.85rem;
+    }
+    button.bus-mini--primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    button.bus-mini--ghost {
+      background: transparent;
+      color: var(--accent-3);
+      border: 2px solid rgba(10, 22, 40, 0.2);
+    }
+    .bus-vehicle {
+      position: relative;
+      padding: 0 0 1.1rem;
+    }
+    .bus-vehicle-svg {
+      width: 100%;
+      max-width: 400px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 10px 24px rgba(10, 22, 40, 0.12));
+    }
+    .bus-seats-wrap {
+      margin-top: -0.5rem;
+      padding: 0 1rem 1rem;
+    }
+    .bus-body-panel {
+      background: linear-gradient(180deg, #b8e4f8 0%, #8fd4ef 38%, #6bc4e8 100%);
+      border-radius: 20px 20px 14px 14px;
+      border: 3px solid var(--accent-3);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.45),
+        0 8px 0 rgba(10, 22, 40, 0.12);
+      padding: 0.85rem 0.75rem 1rem;
+      position: relative;
+    }
+    .bus-body-panel::before {
+      content: "";
+      position: absolute;
+      left: 8%;
+      right: 8%;
+      top: 0.45rem;
+      height: 5px;
+      border-radius: 4px;
+      background: var(--accent);
+      opacity: 0.85;
+    }
+    .bus-windshield {
+      text-align: center;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--accent-3);
+      opacity: 0.75;
+      margin-bottom: 0.5rem;
+      padding-top: 0.35rem;
+    }
+    .bus-seat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.55rem;
+    }
+    .bus-seat {
+      position: relative;
+      min-height: 4.5rem;
+      border-radius: 14px;
+      border: 2px dashed rgba(10, 22, 40, 0.28);
+      background: rgba(255, 255, 255, 0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem 0.3rem;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    }
+    .bus-seat:hover {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: rgba(10, 22, 40, 0.4);
+    }
+    .bus-seat--filled {
+      border-style: solid;
+      border-color: rgba(10, 22, 40, 0.35);
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(10, 22, 40, 0.08);
+    }
+    .bus-seat-num {
+      position: absolute;
+      top: 0.25rem;
+      left: 0.35rem;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--accent-3);
+      opacity: 0.45;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    }
+    .bus-seat-name {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: center;
+      line-height: 1.25;
+      word-break: break-word;
+      max-width: 100%;
+      padding: 0 0.15rem;
+      color: var(--ink);
+    }
+    .bus-seat-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      width: 100%;
+    }
+    button.bus-seat-btn {
+      font: inherit;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      padding: 0.35rem 0.5rem;
+      background: var(--accent-3);
+      color: #fff;
+    }
+    button.bus-seat-btn:hover {
+      opacity: 0.92;
+    }
+    button.bus-seat-remove {
+      font: inherit;
+      font-size: 0.7rem;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      text-decoration: underline;
+      padding: 0.1rem;
+    }
+    button.bus-seat-remove:hover {
+      color: #b00020;
+    }
+    .bus-wheels {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+      margin-top: -0.35rem;
+      position: relative;
+      z-index: 1;
+    }
+    .bus-wheel {
+      width: 2.25rem;
+      height: 2.25rem;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #555, #1a1a1a);
+      border: 3px solid #333;
+      box-shadow: inset -2px -2px 4px rgba(0, 0, 0, 0.4);
+    }
+    .bus-section--compact {
+      padding: 0.85rem 1rem !important;
+    }
+    .bus-section--compact .section-head {
+      margin-bottom: 0.45rem;
+    }
+    .bus-section--compact .bus-board {
+      max-width: 14rem;
+    }
+    .bus-section--compact .bus-date-block {
+      margin-bottom: 0.55rem;
+    }
+    .bus-section--compact .bus-date-block label {
+      font-size: 0.58rem;
+      margin-bottom: 0.2rem;
+    }
+    .bus-section--compact .bus-date-controls {
+      gap: 0.25rem;
+    }
+    .bus-section--compact .bus-date-controls input[type="text"] {
+      min-width: 5.5rem;
+      padding: 0.28rem 0.4rem;
+      font-size: 0.72rem;
+      border-radius: 8px;
+    }
+    .bus-section--compact .bus-date-show {
+      font-size: clamp(0.55rem, 1.8vw, 0.72rem);
+      margin: 0.2rem 0 0.4rem;
+      padding: 0.28rem 0.45rem;
+      border-radius: 8px;
+    }
+    .bus-section--compact button.bus-mini {
+      padding: 0.28rem 0.45rem;
+      font-size: 0.65rem;
+      border-radius: 7px;
+    }
+    .bus-section--compact .bus-vehicle {
+      padding: 0 0 0.45rem;
+    }
+    .bus-section--compact .bus-vehicle-svg {
+      max-width: 200px;
+    }
+    .bus-section--compact .bus-seats-wrap {
+      margin-top: -0.2rem;
+      padding: 0 0.45rem 0.45rem;
+    }
+    .bus-section--compact .bus-body-panel {
+      border-radius: 11px 11px 8px 8px;
+      border-width: 2px;
+      padding: 0.4rem 0.4rem 0.5rem;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 4px 0 rgba(10, 22, 40, 0.1);
+    }
+    .bus-section--compact .bus-body-panel::before {
+      height: 3px;
+      top: 0.28rem;
+    }
+    .bus-section--compact .bus-windshield {
+      font-size: 0.52rem;
+      margin-bottom: 0.28rem;
+      padding-top: 0.2rem;
+    }
+    .bus-section--compact .bus-seat-grid {
+      gap: 0.28rem;
+    }
+    .bus-section--compact .bus-seat {
+      min-height: 2.35rem;
+      border-radius: 8px;
+      padding: 0.18rem 0.15rem;
+      border-width: 1.5px;
+    }
+    .bus-section--compact .bus-seat-num {
+      font-size: 0.5rem;
+      top: 0.12rem;
+      left: 0.22rem;
+    }
+    .bus-section--compact .bus-seat-name {
+      font-size: 0.62rem;
+      line-height: 1.15;
+    }
+    .bus-section--compact button.bus-seat-btn {
+      font-size: 0.58rem;
+      padding: 0.15rem 0.3rem;
+      border-radius: 6px;
+    }
+    .bus-section--compact button.bus-seat-remove {
+      font-size: 0.55rem;
+    }
+    .bus-section--compact .bus-wheels {
+      padding: 0 0.65rem;
+      margin-top: -0.2rem;
+    }
+    .bus-section--compact .bus-wheel {
+      width: 1.1rem;
+      height: 1.1rem;
+      border-width: 2px;
+    }
+    .bus-section--compact .bus-head-actions .btn-compact {
+      padding: 0.3rem 0.55rem;
+      font-size: 0.72rem;
+    }
+    .team-share-section .team-share-list {
+      margin: 0;
+      padding-left: 1.15rem;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+    .team-share-section .team-share-list li {
+      margin-bottom: 0.65rem;
+    }
+    .team-share-section .team-share-list li:last-child {
+      margin-bottom: 0;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 2rem 1rem 3rem;
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="hero">
+    <div class="hero-visual">
+      <img class="hero-logo" src="logo.png" width="505" height="180" alt="Sharky Triathlon Team logo" decoding="async" />
+    </div>
+    <div class="hero-tagline">
+      <p class="eyebrow">Triathlon squad</p>
+      <p class="hero-title">Sharky Triathlon Team</p>
+    </div>
+  </div>
+  <header class="intro">
+    <h1 class="page-title">Sharky Triathlon Team — one page for parents and athletes</h1>
+    <p class="lead">Calendar, links, photos, roster, and weekend cups. Add results in <a class="inline-link" href="admin-results.html">admin</a> (coach shares the PIN).</p>
+  </header>
+
+  <main>
+    <section class="span-2 results-section" id="weekend-results">
+      <div class="section-head">
+        <h2>Weekend results <span class="tag">cups</span></h2>
+        <a class="btn btn-compact" href="admin-results.html">Add</a>
+      </div>
+      <div id="weekend-results-root" class="results-grid"></div>
+      <p class="hint">Cards load from this browser. In <a class="inline-link" href="admin-results.html">admin</a> you can import or export JSON to share the same list between devices.</p>
+    </section>
+
+    <section class="span-2">
+      <h2>Quick links <span class="tag">links</span></h2>
+      <div class="links">
+        <a class="btn" href="https://calendar.google.com/calendar/embed?src=84c6b7a0009795cecd9ec1ec13b4a44f6ff678badcdb52442cec506d6379e443%40group.calendar.google.com&amp;ctz=Europe%2FRiga" target="_blank" rel="noopener">Open race calendar</a>
+        <a class="btn secondary" href="https://drive.google.com/YOUR_PHOTO_FOLDER" target="_blank" rel="noopener">Google Drive — photos</a>
+        <a class="btn ghost" href="#" target="_blank" rel="noopener">Team chat (Telegram / WhatsApp)</a>
+      </div>
+      <p class="hint">To change the embed below: Google Calendar → calendar settings → Integrate calendar → copy the iframe <code>src</code> into this page.</p>
+    </section>
+
+    <section class="span-2">
+      <h2>Calendar <span class="tag">embed</span></h2>
+      <iframe class="cal" title="Race calendar" src="https://calendar.google.com/calendar/embed?src=84c6b7a0009795cecd9ec1ec13b4a44f6ff678badcdb52442cec506d6379e443%40group.calendar.google.com&amp;ctz=Europe%2FRiga"></iframe>
+    </section>
+
+    <section>
+      <h2>Roster <span class="tag">edit</span></h2>
+      <table>
+        <thead>
+          <tr><th>Athlete</th><th>Year</th><th>Parent contact</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Ivan Ivanov</td><td>2014</td><td>+371 …</td></tr>
+          <tr><td>Maria Petrova</td><td>2013</td><td>…</td></tr>
+          <tr><td>…</td><td>…</td><td>…</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Race entries <span class="tag">checklist</span></h2>
+      <table>
+        <thead>
+          <tr><th>Done</th><th>Race</th><th>Deadline</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><input class="check" type="checkbox" aria-label="Entry submitted" /></td><td>Cup …</td><td>Jun 15</td></tr>
+          <tr><td><input class="check" type="checkbox" aria-label="Entry submitted" /></td><td>…</td><td>…</td></tr>
+        </tbody>
+      </table>
+      <p class="hint">Checkboxes do not sync across devices. Use a shared Google Sheet or a signup form for the whole team.</p>
+    </section>
+
+    <section class="span-2 team-share-section" id="for-team">
+      <h2>For your team <span class="tag">share</span></h2>
+      <ul class="team-share-list">
+        <li><strong>Give them one link</strong> — after you publish this site (e.g. GitHub Pages), send the main page URL in WhatsApp/Telegram. No app install.</li>
+        <li><strong>Weekend cups / results</strong> — they open <a class="inline-link" href="admin-results.html">admin-results.html</a> with the PIN you set in that file. Data lives in each browser unless you <strong>export / import JSON</strong> there so everyone matches.</li>
+        <li><strong>Trip bus seats</strong> — same link; with <code>useCloud: true</code> in <code>bus-config.js</code> + Supabase, everyone sees one bus. Otherwise seats are only on that device.</li>
+        <li><strong>Where awards are stored</strong> — in the browser’s <code>localStorage</code> key for results, or in the JSON file you share from admin; optional cloud for the bus is in your Supabase table <code>bus_board</code>.</li>
+      </ul>
+    </section>
+
+    <section class="span-2 bus-section bus-section--compact" aria-labelledby="bus-title">
+      <div class="section-head">
+        <h2 id="bus-title">Trip bus <span class="tag">9 seats</span> <span class="tag" id="bus-cloud-tag" hidden>live</span></h2>
+        <div class="bus-head-actions">
+          <button type="button" class="btn btn-compact" id="bus-sync-now" hidden>Refresh list</button>
+          <button type="button" class="btn btn-ghost btn-compact" id="bus-admin-reset" hidden>Admin: new trip</button>
+        </div>
+      </div>
+      <div class="bus-board">
+        <div class="bus-date-block">
+          <label for="bus-trip-date">Trip date</label>
+          <div class="bus-date-controls">
+            <input type="text" id="bus-trip-date" maxlength="120" placeholder="e.g. 22 June — race in Jūrmala" autocomplete="off" />
+            <button type="button" class="bus-mini bus-mini--primary" id="bus-trip-date-save">Save date</button>
+            <button type="button" class="bus-mini bus-mini--ghost" id="bus-trip-date-clear">Clear date</button>
+          </div>
+          <p class="bus-date-show" id="bus-date-show" hidden></p>
+        </div>
+        <div class="bus-vehicle">
+          <svg class="bus-vehicle-svg" viewBox="0 0 320 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="busRoof" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#ffe066" />
+                <stop offset="100%" style="stop-color:#ffcc33" />
+              </linearGradient>
+            </defs>
+            <rect x="8" y="28" width="304" height="44" rx="14" fill="url(#busRoof)" stroke="#0a1628" stroke-width="2.5" />
+            <path d="M8 52 L8 62 Q8 72 22 72 L298 72 Q312 72 312 62 L312 52" fill="#ff6b2d" opacity="0.9" stroke="#0a1628" stroke-width="2" />
+            <rect x="22" y="36" width="52" height="22" rx="6" fill="#e8f7fc" stroke="#0a1628" stroke-width="1.5" />
+            <text x="48" y="51" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="800" fill="#0a1628">BUS</text>
+            <circle cx="52" cy="78" r="10" fill="#222" stroke="#0a1628" stroke-width="2" />
+            <circle cx="268" cy="78" r="10" fill="#222" stroke="#0a1628" stroke-width="2" />
+            <circle cx="52" cy="78" r="4" fill="#666" />
+            <circle cx="268" cy="78" r="4" fill="#666" />
+            <path d="M268 36 L298 36 Q306 36 306 44 L306 58 Q306 64 298 64 L268 64 Z" fill="#7ec8e8" stroke="#0a1628" stroke-width="1.5" />
+          </svg>
+        </div>
+        <div class="bus-seats-wrap">
+          <div class="bus-body-panel">
+            <div class="bus-windshield">PASSENGERS</div>
+            <div class="bus-seat-grid" id="bus-seat-grid" role="list"></div>
+          </div>
+          <div class="bus-wheels" aria-hidden="true">
+            <div class="bus-wheel"></div>
+            <div class="bus-wheel"></div>
+          </div>
+        </div>
+      </div>
+      <p class="hint" id="bus-sync-hint"></p>
+    </section>
+  </main>
+
+  <footer>
+    Static template — upload the <code>triathlon-team-hub</code> folder to GitHub Pages or open <code>index.html</code> locally.
+  </footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="bus-config.js"></script>
+  <script src="results-storage.js"></script>
+  <script src="results-render.js"></script>
+  <script src="bus-board.js"></script>
+</body>
+</html>
