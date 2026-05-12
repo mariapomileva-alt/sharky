@@ -172,6 +172,21 @@
         align-items: start;
       }
       .span-2 { grid-column: span 2; }
+      .race-entries-layout {
+        grid-template-columns: minmax(0, 1.1fr) minmax(14rem, 1fr);
+        gap: 1.5rem 1.75rem;
+      }
+      .race-entries-bus {
+        border-left: 1px solid rgba(10, 22, 40, 0.1);
+        padding-left: 1.35rem;
+        margin-top: 0;
+        padding-top: 0;
+        border-top: none;
+      }
+      .race-entries-section .bus-section--compact .bus-board {
+        margin-left: 0;
+        margin-right: 0;
+      }
     }
     section {
       border-radius: var(--radius);
@@ -264,10 +279,23 @@
       height: 1rem;
       accent-color: var(--accent);
     }
-    .race-bus-split {
-      margin: 1.35rem 0 1.1rem;
-      border: 0;
-      border-top: 1px solid rgba(10, 22, 40, 0.1);
+    .race-entries-layout {
+      display: grid;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    .race-entries-check {
+      min-width: 0;
+    }
+    .race-entries-bus {
+      min-width: 0;
+    }
+    @media (max-width: 899px) {
+      .race-entries-bus {
+        border-top: 1px solid rgba(10, 22, 40, 0.1);
+        padding-top: 1.15rem;
+        margin-top: 0.15rem;
+      }
     }
     @media (prefers-reduced-motion: reduce) {
       a.btn:hover { transform: none; }
@@ -884,52 +912,26 @@
         <a class="btn secondary" href="https://drive.google.com/YOUR_PHOTO_FOLDER" target="_blank" rel="noopener">Google Drive — photos</a>
         <a class="btn ghost" href="#" target="_blank" rel="noopener">Team chat (Telegram / WhatsApp)</a>
       </div>
-      <p class="hint">To change the embed below: Google Calendar → calendar settings → Integrate calendar → copy the iframe <code>src</code> into this page.</p>
+      <p class="hint">To change the calendar embed: Google Calendar → calendar settings → Integrate calendar → copy the iframe <code>src</code> into the Calendar section on this page.</p>
     </section>
 
-    <section class="span-2">
-      <h2>Calendar <span class="tag">embed</span></h2>
-      <iframe class="cal" title="Race calendar" src="https://calendar.google.com/calendar/embed?src=84c6b7a0009795cecd9ec1ec13b4a44f6ff678badcdb52442cec506d6379e443%40group.calendar.google.com&amp;ctz=Europe%2FRiga"></iframe>
-    </section>
-
-    <section>
-      <h2>Roster <span class="tag">edit</span></h2>
-      <table>
-        <thead>
-          <tr><th>Athlete</th><th>Year</th><th>Parent contact</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>Danik</td><td>…</td><td>…</td></tr>
-          <tr><td>Mark</td><td>…</td><td>…</td></tr>
-          <tr><td>Mihails</td><td>…</td><td>…</td></tr>
-          <tr><td>Aleksandrs</td><td>…</td><td>…</td></tr>
-          <tr><td>Marks G</td><td>…</td><td>…</td></tr>
-          <tr><td>mini Mark</td><td>…</td><td>…</td></tr>
-          <tr><td>Anastasiya</td><td>…</td><td>…</td></tr>
-          <tr><td>Ksenija</td><td>…</td><td>…</td></tr>
-          <tr><td>Edvards</td><td>…</td><td>…</td></tr>
-          <tr><td>Toms</td><td>…</td><td>…</td></tr>
-          <tr><td>Kira</td><td>…</td><td>…</td></tr>
-        </tbody>
-      </table>
-    </section>
-
-    <section class="span-2">
+    <section class="span-2 race-entries-section">
       <h2>Race entries <span class="tag">checklist</span></h2>
-      <table>
-        <thead>
-          <tr><th>Done</th><th>Race</th><th>Deadline</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><input class="check" type="checkbox" aria-label="Entry submitted" /></td><td>Cup …</td><td>Jun 15</td></tr>
-          <tr><td><input class="check" type="checkbox" aria-label="Entry submitted" /></td><td>…</td><td>…</td></tr>
-        </tbody>
-      </table>
-      <p class="hint">Checkboxes do not sync across devices. Use a shared Google Sheet or a signup form for the whole team.</p>
-
-      <div class="race-bus-split" role="presentation"></div>
-
-      <div class="bus-section bus-section--compact" aria-labelledby="bus-title">
+      <div class="race-entries-layout">
+        <div class="race-entries-check">
+          <table>
+            <thead>
+              <tr><th>Done</th><th>Race</th><th>Deadline</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><input class="check" type="checkbox" aria-label="Entry submitted" /></td><td>Cup …</td><td>Jun 15</td></tr>
+              <tr><td><input class="check" type="checkbox" aria-label="Entry submitted" /></td><td>…</td><td>…</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">Checkboxes do not sync across devices. Use a shared Google Sheet or a signup form for the whole team.</p>
+        </div>
+        <div class="race-entries-bus">
+          <div class="bus-section bus-section--compact" aria-labelledby="bus-title">
       <div class="section-head">
         <h2 id="bus-title">Trip bus <span class="tag">9 seats</span> <span class="tag" id="bus-cloud-tag" hidden>live</span></h2>
         <div class="bus-head-actions">
@@ -978,7 +980,36 @@
         </div>
       </div>
       <p class="hint" id="bus-sync-hint"></p>
+          </div>
+        </div>
       </div>
+    </section>
+
+    <section class="span-2">
+      <h2>Calendar <span class="tag">embed</span></h2>
+      <iframe class="cal" title="Race calendar" src="https://calendar.google.com/calendar/embed?src=84c6b7a0009795cecd9ec1ec13b4a44f6ff678badcdb52442cec506d6379e443%40group.calendar.google.com&amp;ctz=Europe%2FRiga"></iframe>
+    </section>
+
+    <section>
+      <h2>Roster <span class="tag">edit</span></h2>
+      <table>
+        <thead>
+          <tr><th>Athlete</th><th>Year</th><th>Parent contact</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Danik</td><td>…</td><td>…</td></tr>
+          <tr><td>Mark</td><td>…</td><td>…</td></tr>
+          <tr><td>Mihails</td><td>…</td><td>…</td></tr>
+          <tr><td>Aleksandrs</td><td>…</td><td>…</td></tr>
+          <tr><td>Marks G</td><td>…</td><td>…</td></tr>
+          <tr><td>mini Mark</td><td>…</td><td>…</td></tr>
+          <tr><td>Anastasiya</td><td>…</td><td>…</td></tr>
+          <tr><td>Ksenija</td><td>…</td><td>…</td></tr>
+          <tr><td>Edvards</td><td>…</td><td>…</td></tr>
+          <tr><td>Toms</td><td>…</td><td>…</td></tr>
+          <tr><td>Kira</td><td>…</td><td>…</td></tr>
+        </tbody>
+      </table>
     </section>
   </main>
 
