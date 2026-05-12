@@ -24,6 +24,17 @@
       --max: 1100px;
     }
     * { box-sizing: border-box; }
+    .visually-hidden {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
     body {
       margin: 0;
       font-family: "IBM Plex Sans", system-ui, sans-serif;
@@ -267,37 +278,175 @@
     .results-section .section-head h2 {
       margin: 0;
     }
-    .results-team-roster {
-      margin: 0 0 1rem;
+    .season-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin: 0 0 1.15rem;
     }
-    .results-team-roster > p {
-      margin: 0 0 0.45rem;
-      font-size: 0.72rem;
+    .season-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.5rem 0.75rem;
+      background: linear-gradient(165deg, #fff 0%, #f4fafd 100%);
+      border-radius: 14px;
+      border: 1px solid rgba(10, 22, 40, 0.08);
+      box-shadow: 0 2px 10px rgba(10, 22, 40, 0.05);
+    }
+    .season-stat-label {
+      font-size: 0.68rem;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--muted);
+      line-height: 1.2;
     }
-    .results-team-roster ul {
-      margin: 0;
-      padding: 0.65rem 1rem 0.65rem 1.35rem;
-      background: rgba(255, 255, 255, 0.55);
-      border-radius: 14px;
-      border: 1px solid rgba(10, 22, 40, 0.07);
-      font-size: 0.88rem;
-      line-height: 1.45;
+    .season-stat strong {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
       color: var(--accent-3);
-      columns: 2;
-      column-gap: 1.75rem;
+      line-height: 1;
     }
-    @media (max-width: 520px) {
-      .results-team-roster ul {
-        columns: 1;
-      }
+    .season-stat-cubes {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
     }
-    .results-team-roster li {
-      break-inside: avoid;
-      padding: 0.12rem 0;
+    .season-cube {
+      width: 1.65rem;
+      height: 1.65rem;
+      border-radius: 7px;
+      transform: rotate(-4deg);
+      box-shadow: 0 2px 0 rgba(10, 22, 40, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+    .season-cube--gold {
+      background: linear-gradient(145deg, #ffe082, #ffb300);
+      border: 2px solid #f57f17;
+    }
+    .season-cube--bronze {
+      background: linear-gradient(145deg, #d7a574, #a1887f);
+      border: 2px solid #6d4c41;
+    }
+    .season-cube--top5 {
+      background: linear-gradient(145deg, #b3e5fc, #4fc3f7);
+      border: 2px solid #0288d1;
+    }
+    .season-board-wrap {
+      overflow-x: auto;
+      margin: 0 0 1.5rem;
+      border-radius: 16px;
+      border: 1px solid rgba(10, 22, 40, 0.08);
+      background: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 4px 20px rgba(10, 22, 40, 0.06);
+      -webkit-overflow-scrolling: touch;
+    }
+    .season-board {
+      width: 100%;
+      min-width: 17rem;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+    .season-board thead th {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent-3);
+      padding: 0.65rem 0.4rem;
+      border-bottom: 2px solid rgba(10, 22, 40, 0.1);
+      vertical-align: bottom;
+    }
+    .season-board thead th:first-child {
+      text-align: left;
+      padding-left: 0.85rem;
+      min-width: 7.5rem;
+    }
+    .season-round-sub {
+      display: block;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 0.65rem;
+      text-transform: none;
+      letter-spacing: 0;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+    .season-board tbody th {
+      text-align: left;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-bottom: 1px solid rgba(10, 22, 40, 0.06);
+      color: var(--accent-3);
+    }
+    .season-board tbody td {
+      text-align: center;
+      padding: 0.4rem;
+      border-bottom: 1px solid rgba(10, 22, 40, 0.06);
+      vertical-align: middle;
+    }
+    .season-board tbody tr:last-child th,
+    .season-board tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .place-cube {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.05rem;
+      min-width: 2.35rem;
+      min-height: 2.35rem;
+      padding: 0.15rem;
+      border-radius: 10px;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 0.85rem;
+      line-height: 1;
+      transform: rotate(-2deg);
+      box-shadow: 0 3px 0 rgba(10, 22, 40, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+    .place-cube-n {
+      position: relative;
+      z-index: 1;
+    }
+    .place-cube--gold {
+      background: linear-gradient(155deg, #ffe082 0%, #ffb300 55%, #ff8f00 100%);
+      border: 2px solid #e65100;
+      color: #3e2723;
+    }
+    .place-cube--bronze {
+      background: linear-gradient(155deg, #d7ccc8 0%, #bcaaa4 45%, #8d6e63 100%);
+      border: 2px solid #5d4037;
+      color: #3e2723;
+    }
+    .place-cube--top5 {
+      background: linear-gradient(155deg, #e1f5fe 0%, #81d4fa 50%, #4fc3f7 100%);
+      border: 2px solid #0277bd;
+      color: #0a1628;
+    }
+    .place-cube--empty {
+      min-width: 2.1rem;
+      min-height: 2.1rem;
+      background: rgba(10, 22, 40, 0.04);
+      border: 2px dashed rgba(10, 22, 40, 0.12);
+      color: transparent;
+      box-shadow: none;
+      transform: none;
+    }
+    .place-cube-medal {
+      font-size: 0.95rem;
+      line-height: 1;
+      margin-bottom: 0.08rem;
+    }
+    .season-subhead {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      margin: 0 0 0.65rem;
+      color: var(--accent-3);
     }
     a.btn-compact {
       padding: 0.45rem 0.85rem;
@@ -766,33 +915,134 @@
   </div>
   <header class="intro">
     <h1 class="page-title">Sharky Triathlon Team — one page for parents and athletes</h1>
-    <p class="lead">Calendar, links, photos, roster &amp; weekend cups — <a class="inline-link" href="admin-results.html">admin</a> (coach PIN)</p>
+    <p class="lead">Calendar, links, photos, roster &amp; season board — <a class="inline-link" href="admin-results.html">admin</a> (coach PIN)</p>
   </header>
 
   <main>
-    <section class="span-2 results-section" id="weekend-results">
+    <section class="span-2 results-section" id="season-results">
       <div class="section-head">
-        <h2>Weekend results <span class="tag">cups</span></h2>
-        <a class="btn btn-compact" href="admin-results.html">Add</a>
+        <h2>Season results <span class="tag">board</span></h2>
+        <a class="btn btn-compact" href="admin-results.html">Add highlight</a>
       </div>
-      <div class="results-team-roster" aria-label="Team roster for results">
-        <p>Team roster</p>
-        <ul>
-          <li>Danik</li>
-          <li>Mark</li>
-          <li>Mihails</li>
-          <li>Aleksandrs</li>
-          <li>Marks G</li>
-          <li>mini Mark</li>
-          <li>Anastasiya</li>
-          <li>Ksenija</li>
-          <li>Edvards</li>
-          <li>Toms</li>
-          <li>Kira</li>
-        </ul>
+
+      <div class="season-summary" aria-label="Season at a glance">
+        <div class="season-stat">
+          <span class="season-stat-label">Races<br />done</span>
+          <strong>2</strong>
+        </div>
+        <div class="season-stat">
+          <span class="season-stat-label">Gold</span>
+          <div class="season-stat-cubes" aria-hidden="true">
+            <span class="season-cube season-cube--gold"></span>
+            <span class="season-cube season-cube--gold" style="transform: rotate(3deg)"></span>
+          </div>
+          <strong style="font-size: 1.1rem">×2</strong>
+        </div>
+        <div class="season-stat">
+          <span class="season-stat-label">Bronze</span>
+          <div class="season-stat-cubes" aria-hidden="true">
+            <span class="season-cube season-cube--bronze"></span>
+          </div>
+          <strong style="font-size: 1.1rem">×1</strong>
+        </div>
+        <div class="season-stat">
+          <span class="season-stat-label">Top‑5</span>
+          <div class="season-stat-cubes" aria-hidden="true">
+            <span class="season-cube season-cube--top5"></span>
+            <span class="season-cube season-cube--top5" style="transform: rotate(5deg)"></span>
+            <span class="season-cube season-cube--top5" style="transform: rotate(-3deg)"></span>
+          </div>
+          <strong style="font-size: 1.1rem">×5</strong>
+        </div>
       </div>
+
+      <div class="season-board-wrap">
+        <table class="season-board">
+          <caption class="visually-hidden">Season placings by athlete and race round</caption>
+          <thead>
+            <tr>
+              <th scope="col">Athlete</th>
+              <th scope="col">
+                Round 1
+                <span class="season-round-sub">Cup — Apr</span>
+              </th>
+              <th scope="col">
+                Round 2
+                <span class="season-round-sub">Sprint — May</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Danik</th>
+              <td>
+                <span class="place-cube place-cube--gold" title="1st place"><span class="place-cube-medal" aria-hidden="true">🏆</span><span class="place-cube-n">1</span></span>
+              </td>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Mark</th>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+              <td>
+                <span class="place-cube place-cube--gold" title="1st place"><span class="place-cube-medal" aria-hidden="true">🏆</span><span class="place-cube-n">1</span></span>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Mihails</th>
+              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Aleksandrs</th>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Marks G</th>
+              <td>
+                <span class="place-cube place-cube--bronze" title="3rd place"><span class="place-cube-medal" aria-hidden="true">🥉</span><span class="place-cube-n">3</span></span>
+              </td>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+            </tr>
+            <tr>
+              <th scope="row">mini Mark</th>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Anastasiya</th>
+              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Ksenija</th>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Edvards</th>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Toms</th>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Kira</th>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="hint" style="margin: -0.35rem 0 1rem; font-size: 0.78rem">Demo numbers for the season — edit the table in <code>index.html</code> after each race.</p>
+
+      <h3 class="season-subhead">Latest highlights</h3>
       <div id="weekend-results-root" class="results-grid"></div>
-      <p class="hint">Cards load from this browser. In <a class="inline-link" href="admin-results.html">admin</a> you can import or export JSON to share the same list between devices.</p>
+      <p class="hint">Photo cards load from this browser. In <a class="inline-link" href="admin-results.html">admin</a> you can import or export JSON to share the same list between devices.</p>
     </section>
 
     <section class="span-2">

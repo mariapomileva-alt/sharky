@@ -83,8 +83,8 @@
     if (!list.length) {
       root.innerHTML =
         '<div class="results-empty">' +
-        "<p>No weekend results yet.</p>" +
-        '<p class="results-empty-sub"><a class="inline-link" href="admin-results.html">Add a result</a> — works on a phone (ask the coach for the PIN).</p>' +
+        "<p>No highlights yet.</p>" +
+        '<p class="results-empty-sub"><a class="inline-link" href="admin-results.html">Add a highlight</a> — works on a phone (ask the coach for the PIN).</p>' +
         "</div>";
       return;
     }
