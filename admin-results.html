@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="highlights.css" />
   <style>
     :root {
       --bg: #e9f5fc;
@@ -136,8 +137,12 @@
       margin: 0.75rem 0 1rem;
     }
     .sync-bar button { flex: 1; min-width: 7rem; }
-    .btn-small { padding: 0.45rem 0.75rem; font-size: 0.82rem; width: 100%; margin-top: 0.5rem; }
-  </style>
+    .admin-board-title {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin: 0 0 0.35rem;
+    }
 </head>
 <body>
   <div class="contact-bar" role="region" aria-label="Contacts">
@@ -160,6 +165,14 @@
     </div>
 
     <div id="panel" hidden>
+      <div class="card">
+        <h2 class="admin-board-title">Team board</h2>
+        <p class="muted" style="margin:0 0 0.5rem;">Same compact rows &amp; icons as on the hub. Everyone on the roster is listed; <strong>—</strong> means no saved entry yet. Ranking: more gold first, then silver, bronze, 🏅.</p>
+        <div class="admin-board-shell">
+          <div id="admin-board-root" class="results-grid"></div>
+        </div>
+      </div>
+
       <div class="card">
         <h2 style="font-family:Bricolage Grotesque,sans-serif;font-size:1.1rem;margin:0 0 1rem;">New entry</h2>
         <label for="athletePreset">Team member</label>
@@ -199,7 +212,7 @@
         <input id="photoFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif" />
         <button type="button" class="btn-primary" id="addBtn">Save entry</button>
         <p class="err" id="formErr" hidden></p>
-        <p class="ok" id="formOk" hidden>Saved. Open the hub in another tab to see the card update.</p>
+        <p class="ok" id="formOk" hidden>Saved. Team board above updates; open the hub to see the same list.</p>
       </div>
 
       <div class="card">
@@ -226,6 +239,7 @@
   </div>
 
   <script src="results-storage.js"></script>
+  <script src="highlights-board.js"></script>
   <script>
     /* Change this PIN before publishing */
     var ADMIN_PIN = "shark24";
@@ -246,6 +260,12 @@
       sessionStorage.setItem(SESSION_KEY, "1");
     }
 
+    function refreshBoardPreview() {
+      var el = document.getElementById("admin-board-root");
+      if (!el || !window.SharkyHighlights) return;
+      window.SharkyHighlights.renderInto(el, { showFullRoster: true });
+    }
+
     function showPanel() {
       document.getElementById("gate").hidden = true;
       document.getElementById("panel").hidden = false;
@@ -257,6 +277,7 @@
       var arr = window.TriResults.load();
       if (!arr.length) {
         list.innerHTML = '<p class="muted">Nothing here yet.</p>';
+        refreshBoardPreview();
         return;
       }
       list.innerHTML = arr
@@ -288,6 +309,7 @@
           renderList();
         });
       });
+      refreshBoardPreview();
     }
 
     function escapeHtml(s) {

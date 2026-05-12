@@ -1,0 +1,186 @@
+/* Shared: hub “Latest highlights” + admin board preview */
+a.inline-link {
+  color: var(--accent-3);
+  font-weight: 600;
+}
+
+.results-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.results-empty {
+  text-align: center;
+  padding: 1.25rem 1rem;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 14px;
+  border: 1px dashed rgba(10, 22, 40, 0.15);
+}
+
+.results-empty-sub {
+  margin: 0.5rem 0 0;
+  font-size: 0.92rem;
+}
+
+.hl-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.55rem 0.4rem 0.45rem;
+  border-radius: 12px;
+  border: 1px solid rgba(10, 22, 40, 0.07);
+  background: linear-gradient(165deg, #fff 0%, #f6fbfe 100%);
+  box-shadow: 0 1px 6px rgba(10, 22, 40, 0.04);
+  border-left: 3px solid var(--accent);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.hl-row:hover {
+  box-shadow: 0 3px 14px rgba(10, 22, 40, 0.08);
+  transform: translateY(-1px);
+}
+
+.hl-row.hl-row--pending {
+  border-left-color: rgba(10, 22, 40, 0.15);
+  opacity: 0.92;
+}
+
+.hl-rank {
+  flex: 0 0 1.35rem;
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1;
+}
+
+.hl-avatar {
+  flex: 0 0 2rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: linear-gradient(150deg, var(--shark-blue), #d8eef8);
+  border: 1.5px dashed rgba(10, 22, 40, 0.18);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.hl-avatar--photo {
+  border-style: solid;
+  border-color: rgba(10, 22, 40, 0.12);
+}
+
+.hl-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hl-initials {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 0.55rem;
+  color: var(--accent-3);
+  user-select: none;
+  letter-spacing: -0.02em;
+}
+
+.hl-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+}
+
+.hl-name {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 0.78rem;
+  line-height: 1.15;
+  color: var(--accent-3);
+  margin: 0;
+}
+
+.hl-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.hl-ico {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.35rem;
+  min-height: 1.35rem;
+  padding: 0.05rem;
+  border-radius: 6px;
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 0.58rem;
+  line-height: 1;
+  box-shadow: 0 2px 0 rgba(10, 22, 40, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.hl-ico--gold {
+  background: linear-gradient(155deg, #ffe082 0%, #ffb300 70%, #ff8f00 100%);
+  border: 1.5px solid #e65100;
+  color: #3e2723;
+}
+
+.hl-ico--silver {
+  background: linear-gradient(155deg, #eceff1 0%, #b0bec5 55%, #90a4ae 100%);
+  border: 1.5px solid #546e7a;
+  color: #263238;
+}
+
+.hl-ico--bronze {
+  background: linear-gradient(155deg, #d7ccc8 0%, #a1887f 50%, #8d6e63 100%);
+  border: 1.5px solid #5d4037;
+  color: #3e2723;
+}
+
+.hl-ico--medal {
+  background: linear-gradient(155deg, #e8f5e9 0%, #81c784 45%, #43a047 100%);
+  border: 1.5px solid #2e7d32;
+  font-size: 0.62rem;
+}
+
+.hl-ico--star {
+  background: linear-gradient(155deg, #fff8e1 0%, #ffe082 35%, #ffecb3 100%);
+  border: 1.5px solid #ff8f00;
+  color: #e65100;
+  font-size: 0.7rem;
+  line-height: 0.9;
+}
+
+.hl-ico--placeholder {
+  min-width: 1.35rem;
+  min-height: 1.35rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: rgba(10, 22, 40, 0.04);
+  border: 1.5px dashed rgba(10, 22, 40, 0.12);
+  box-shadow: none;
+}
+
+.admin-board-shell {
+  background: linear-gradient(165deg, #f8fcff 0%, #eef6fb 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(10, 22, 40, 0.08);
+  padding: 0.65rem 0.5rem;
+  margin-top: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hl-row:hover {
+    transform: none;
+  }
+}
