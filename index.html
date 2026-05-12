@@ -31,6 +31,39 @@
       color: var(--ink);
       line-height: 1.55;
     }
+    .contact-bar {
+      position: relative;
+      z-index: 2;
+      font-size: 0.72rem;
+      line-height: 1.35;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.72);
+      border-bottom: 1px solid rgba(10, 22, 40, 0.07);
+      padding: 0.35rem clamp(0.75rem, 3vw, 1.25rem);
+      text-align: center;
+    }
+    .contact-bar-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.35rem 1.25rem;
+    }
+    .contact-bar a {
+      color: var(--accent-3);
+      font-weight: 500;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .contact-bar a:hover {
+      text-decoration: underline;
+    }
+    .contact-bar .sep {
+      opacity: 0.35;
+      user-select: none;
+    }
     .grain {
       pointer-events: none;
       position: fixed;
@@ -690,6 +723,13 @@
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
+  <div class="contact-bar" role="region" aria-label="Contacts">
+    <div class="contact-bar-inner">
+      <span>Igor <a href="tel:+37126138885">+371&nbsp;26&nbsp;138&nbsp;885</a></span>
+      <span class="sep" aria-hidden="true">·</span>
+      <span>Andris <a href="tel:+37129106009">+371&nbsp;29&nbsp;106&nbsp;009</a></span>
+    </div>
+  </div>
   <div class="hero">
     <div class="hero-visual">
       <img class="hero-logo" src="logo.png" width="505" height="180" alt="Sharky Triathlon Team logo" decoding="async" />
