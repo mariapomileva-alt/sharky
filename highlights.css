@@ -1,4 +1,11 @@
-/* Shared: hub “Latest highlights” + admin board preview */
+/* Shared: hub highlights + admin board preview (self-contained vars) */
+:root {
+  --muted: #3d4f5c;
+  --accent: #ff6b2d;
+  --accent-3: #0a1628;
+  --shark-blue: #9fdcf5;
+}
+
 a.inline-link {
   color: var(--accent-3);
   font-weight: 600;

@@ -219,6 +219,7 @@
       <span>Andris <a href="tel:+37129106009">+371&nbsp;29&nbsp;106&nbsp;009</a></span>
     </div>
   </div>
+  <noscript><div class="wrap" style="padding:2rem;text-align:center;">Enable JavaScript to use this admin page.</div></noscript>
   <div class="wrap">
     <p><a href="index.html">← Back to hub</a></p>
     <h1>Sharky Triathlon Team</h1>
@@ -351,17 +352,35 @@
     var SESSION_KEY = "tri_admin_session";
     var MAX_FILE_B64 = 450000;
 
+    function escapeHtml(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function escapeAttr(s) {
+      return escapeHtml(s).replace(/'/g, "&#39;");
+    }
+
     function newId() {
       if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
       return "id-" + Date.now() + "-" + Math.random().toString(36).slice(2, 9);
     }
 
     function unlocked() {
-      return sessionStorage.getItem(SESSION_KEY) === "1";
+      try {
+        return sessionStorage.getItem(SESSION_KEY) === "1";
+      } catch (e) {
+        return false;
+      }
     }
 
     function setUnlocked() {
-      sessionStorage.setItem(SESSION_KEY, "1");
+      try {
+        sessionStorage.setItem(SESSION_KEY, "1");
+      } catch (e) {}
     }
 
     function refreshBoardPreview() {
@@ -414,10 +433,24 @@
     }
 
     function showPanel() {
-      document.getElementById("gate").hidden = true;
-      document.getElementById("panel").hidden = false;
-      buildSheetRows();
-      renderList();
+      var gate = document.getElementById("gate");
+      var panel = document.getElementById("panel");
+      try {
+        if (gate) gate.hidden = true;
+        if (panel) panel.hidden = false;
+        buildSheetRows();
+        renderList();
+      } catch (err) {
+        console.error(err);
+        try {
+          sessionStorage.removeItem(SESSION_KEY);
+        } catch (ignore) {}
+        if (gate) gate.hidden = false;
+        if (panel) panel.hidden = true;
+        window.alert(
+          "Could not load the admin panel (storage or script error). Session cleared — refresh the page and sign in again."
+        );
+      }
     }
 
     function renderList() {
@@ -458,18 +491,6 @@
         });
       });
       refreshBoardPreview();
-    }
-
-    function escapeHtml(s) {
-      return String(s == null ? "" : s)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    function escapeAttr(s) {
-      return escapeHtml(s).replace(/'/g, "&#39;");
     }
 
     function cleanEntry(x) {
@@ -729,7 +750,14 @@
       }
     });
 
-    if (unlocked()) showPanel();
+    function bootAdmin() {
+      if (unlocked()) showPanel();
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bootAdmin);
+    } else {
+      bootAdmin();
+    }
   </script>
 </body>
 </html>

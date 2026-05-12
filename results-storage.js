@@ -9,18 +9,35 @@
     }
   }
 
+  function lsGet(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function lsSet(key, val) {
+    try {
+      localStorage.setItem(key, val);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   window.TriResults = {
     STORAGE_KEY: STORAGE_KEY,
 
     load: function () {
-      var raw = localStorage.getItem(STORAGE_KEY);
+      var raw = lsGet(STORAGE_KEY);
       if (!raw) return [];
       var data = safeParse(raw);
       return Array.isArray(data) ? data : [];
     },
 
     save: function (arr) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+      if (!lsSet(STORAGE_KEY, JSON.stringify(arr))) return;
       window.dispatchEvent(new CustomEvent("triathlon-results-changed"));
     },
 
