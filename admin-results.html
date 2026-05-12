@@ -18,7 +18,7 @@
       --shark-blue: #9fdcf5;
       --card: #fff;
       --radius: 16px;
-      --max: 560px;
+      --max: 720px;
     }
     * { box-sizing: border-box; }
     body {
@@ -143,6 +143,73 @@
       font-size: 1.1rem;
       margin: 0 0 0.35rem;
     }
+    .sheet-wrap {
+      overflow-x: auto;
+      margin: 0.75rem 0 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(10, 22, 40, 0.1);
+      background: #fafcfd;
+      -webkit-overflow-scrolling: touch;
+    }
+    .sheet-table {
+      width: 100%;
+      min-width: 34rem;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    .sheet-table thead th {
+      text-align: left;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      padding: 0.45rem 0.4rem;
+      border-bottom: 2px solid rgba(10, 22, 40, 0.12);
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .sheet-table tbody th,
+    .sheet-table tbody td {
+      padding: 0.3rem 0.35rem;
+      border-bottom: 1px solid #e2eaf0;
+      vertical-align: middle;
+    }
+    .sheet-table tbody tr:last-child th,
+    .sheet-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .sheet-name {
+      text-align: left;
+      font-weight: 700;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent-3);
+      white-space: nowrap;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .sheet-inp {
+      width: 100%;
+      min-width: 5.5rem;
+      margin: 0 !important;
+      padding: 0.38rem 0.45rem !important;
+      font-size: 0.8rem !important;
+      border-radius: 8px;
+    }
+    .sheet-inp-url { min-width: 8rem; }
+    details.advanced-form {
+      margin-top: 0.5rem;
+      border: 1px solid rgba(10, 22, 40, 0.1);
+      border-radius: 12px;
+      padding: 0.65rem 0.85rem;
+      background: rgba(255, 255, 255, 0.5);
+    }
+    details.advanced-form summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--accent-3);
+      font-size: 0.88rem;
+    }
+  </style>
 </head>
 <body>
   <div class="contact-bar" role="region" aria-label="Contacts">
@@ -174,7 +241,42 @@
       </div>
 
       <div class="card">
-        <h2 style="font-family:Bricolage Grotesque,sans-serif;font-size:1.1rem;margin:0 0 1rem;">New entry</h2>
+        <h2 class="admin-board-title">Quick sheet — one race</h2>
+        <p class="muted" style="margin:0 0 0.65rem;">All roster kids in one table. Set the race once <strong>above the table</strong>, type <strong>place / award</strong> only where needed (e.g. <code>1</code>, <code>3rd</code>, <code>5th</code>), then <strong>Save all filled rows</strong>. Per-row stage &amp; wave override the shared ones if you fill them.</p>
+        <div class="row2" style="margin-top:0;">
+          <div>
+            <label for="sheetStage">Date / stage (whole race)</label>
+            <input id="sheetStage" maxlength="120" placeholder="e.g. 7–8 June, Riga" autocomplete="off" />
+          </div>
+          <div>
+            <label for="sheetGroup">Distance / wave (whole race)</label>
+            <input id="sheetGroup" maxlength="120" placeholder="Sprint kids" autocomplete="off" />
+          </div>
+        </div>
+        <div class="sheet-wrap" role="region" aria-label="Results sheet">
+          <table class="sheet-table" id="sheetTable">
+            <thead>
+              <tr>
+                <th>Athlete</th>
+                <th>Place / award</th>
+                <th>Stage (optional)</th>
+                <th>Wave (optional)</th>
+                <th>Photo URL</th>
+              </tr>
+            </thead>
+            <tbody id="sheetTbody"></tbody>
+          </table>
+        </div>
+        <button type="button" class="btn-primary" id="sheetSaveBtn">Save all filled rows</button>
+        <button type="button" class="btn-ghost" id="sheetClearBtn" style="margin-top:0.5rem;width:100%;">Clear sheet</button>
+        <p class="err" id="sheetErr" hidden></p>
+        <p class="ok" id="sheetOk" hidden></p>
+      </div>
+
+      <div class="card">
+        <details class="advanced-form">
+          <summary>One entry form (photos from device)</summary>
+          <div style="margin-top:0.85rem;">
         <label for="athletePreset">Team member</label>
         <select id="athletePreset" autocomplete="off">
           <option value="">Custom (type names below)</option>
@@ -213,6 +315,8 @@
         <button type="button" class="btn-primary" id="addBtn">Save entry</button>
         <p class="err" id="formErr" hidden></p>
         <p class="ok" id="formOk" hidden>Saved. Team board above updates; open the hub to see the same list.</p>
+          </div>
+        </details>
       </div>
 
       <div class="card">
@@ -266,9 +370,53 @@
       window.SharkyHighlights.renderInto(el, { showFullRoster: true });
     }
 
+    function rosterDisplayName(r) {
+      return ((r.firstName || "").trim() + " " + (r.lastName || "").trim()).trim();
+    }
+
+    function buildSheetRows() {
+      var tb = document.getElementById("sheetTbody");
+      if (!tb || !window.SharkyHighlights || !window.SharkyHighlights.DEFAULT_ROSTER) return;
+      if (tb.children.length) return;
+      var roster = window.SharkyHighlights.DEFAULT_ROSTER;
+      tb.innerHTML = roster
+        .map(function (r) {
+          var fn = escapeAttr(r.firstName);
+          var ln = escapeAttr(r.lastName);
+          var disp = escapeHtml(rosterDisplayName(r));
+          return (
+            '<tr data-first="' +
+            fn +
+            '" data-last="' +
+            ln +
+            '"><th scope="row" class="sheet-name">' +
+            disp +
+            "</th>" +
+            '<td><input class="sheet-inp" type="text" maxlength="500" autocomplete="off" placeholder="e.g. 1, 3rd" /></td>' +
+            '<td><input class="sheet-inp" type="text" maxlength="120" autocomplete="off" placeholder="—" /></td>' +
+            '<td><input class="sheet-inp" type="text" maxlength="120" autocomplete="off" placeholder="—" /></td>' +
+            '<td><input class="sheet-inp sheet-inp-url" type="url" maxlength="4000" autocomplete="off" placeholder="https://…" /></td></tr>'
+          );
+        })
+        .join("");
+    }
+
+    function clearSheetRowInputs(keepSharedRound) {
+      document.querySelectorAll("#sheetTbody .sheet-inp").forEach(function (inp) {
+        inp.value = "";
+      });
+      if (!keepSharedRound) {
+        var st = document.getElementById("sheetStage");
+        var gr = document.getElementById("sheetGroup");
+        if (st) st.value = "";
+        if (gr) gr.value = "";
+      }
+    }
+
     function showPanel() {
       document.getElementById("gate").hidden = true;
       document.getElementById("panel").hidden = false;
+      buildSheetRows();
       renderList();
     }
 
@@ -398,6 +546,57 @@
       if (!opt || !opt.getAttribute("data-first")) return;
       document.getElementById("firstName").value = opt.getAttribute("data-first") || "";
       document.getElementById("lastName").value = opt.getAttribute("data-last") || "";
+    });
+
+    document.getElementById("sheetSaveBtn").addEventListener("click", function () {
+      var err = document.getElementById("sheetErr");
+      var ok = document.getElementById("sheetOk");
+      err.hidden = true;
+      ok.hidden = true;
+      var sharedStage = document.getElementById("sheetStage").value.trim();
+      var sharedGroup = document.getElementById("sheetGroup").value.trim();
+      var arr = window.TriResults.load().slice();
+      var added = 0;
+      document.querySelectorAll("#sheetTbody tr").forEach(function (tr) {
+        var fn = tr.getAttribute("data-first") || "";
+        var ln = tr.getAttribute("data-last") || "";
+        var cells = tr.querySelectorAll(".sheet-inp");
+        if (!cells.length) return;
+        var result = (cells[0].value || "").trim();
+        if (!result) return;
+        var rowStage = (cells[1].value || "").trim();
+        var rowGroup = (cells[2].value || "").trim();
+        var photo = (cells[3].value || "").trim();
+        var stage = rowStage || sharedStage;
+        var group = rowGroup || sharedGroup;
+        arr.unshift({
+          id: newId(),
+          firstName: fn,
+          lastName: ln,
+          stage: stage,
+          group: group,
+          result: result,
+          photo: photo || ""
+        });
+        added++;
+      });
+      if (!added) {
+        err.textContent = "Fill at least one Place / award cell.";
+        err.hidden = false;
+        return;
+      }
+      window.TriResults.save(arr);
+      ok.textContent =
+        "Saved " + added + " " + (added === 1 ? "entry" : "entries") + ".";
+      ok.hidden = false;
+      clearSheetRowInputs(true);
+      renderList();
+    });
+
+    document.getElementById("sheetClearBtn").addEventListener("click", function () {
+      document.getElementById("sheetErr").hidden = true;
+      document.getElementById("sheetOk").hidden = true;
+      clearSheetRowInputs(false);
     });
 
     document.getElementById("addBtn").addEventListener("click", function () {
