@@ -319,6 +319,7 @@
 
   window.SharkyHighlights = {
     DEFAULT_ROSTER: DEFAULT_ROSTER,
-    renderInto: renderInto
+    renderInto: renderInto,
+    classifyEntry: classifyEntry
   };
 })();

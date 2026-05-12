@@ -329,6 +329,10 @@
       background: linear-gradient(145deg, #d7a574, #a1887f);
       border: 2px solid #6d4c41;
     }
+    .season-cube--silver {
+      background: linear-gradient(145deg, #eceff1, #b0bec5);
+      border: 2px solid #546e7a;
+    }
     .season-cube--top5 {
       background: linear-gradient(145deg, #b3e5fc, #4fc3f7);
       border: 2px solid #0288d1;
@@ -351,7 +355,7 @@
     .season-board thead th {
       font-family: "Bricolage Grotesque", system-ui, sans-serif;
       font-weight: 800;
-      font-size: 0.72rem;
+      font-size: 0.62rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
       color: var(--accent-3);
@@ -422,6 +426,22 @@
       border: 2px solid #5d4037;
       color: #3e2723;
     }
+    .place-cube--silver {
+      background: linear-gradient(155deg, #eceff1 0%, #cfd8dc 45%, #90a4ae 100%);
+      border: 2px solid #455a64;
+      color: #263238;
+    }
+    .place-cube--medal {
+      background: linear-gradient(155deg, #e8f5e9 0%, #81c784 45%, #43a047 100%);
+      border: 2px solid #2e7d32;
+      font-size: 0.72rem;
+    }
+    .place-cube--star {
+      background: linear-gradient(155deg, #fff8e1 0%, #ffe082 40%, #ffecb3 100%);
+      border: 2px solid #ff8f00;
+      color: #e65100;
+      font-size: 0.75rem;
+    }
     .place-cube--top5 {
       background: linear-gradient(155deg, #e1f5fe 0%, #81d4fa 50%, #4fc3f7 100%);
       border: 2px solid #0277bd;
@@ -440,6 +460,14 @@
       font-size: 0.95rem;
       line-height: 1;
       margin-bottom: 0.08rem;
+    }
+    .season-cell-cubes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      justify-content: center;
+      align-items: center;
+      min-height: 2.4rem;
     }
     .season-subhead {
       font-family: "Bricolage Grotesque", system-ui, sans-serif;
@@ -825,120 +853,19 @@
         <a class="btn btn-compact" href="admin-results.html">Add highlight</a>
       </div>
 
-      <div class="season-summary" aria-label="Season at a glance">
-        <div class="season-stat">
-          <span class="season-stat-label">Races<br />done</span>
-          <strong>2</strong>
-        </div>
-        <div class="season-stat">
-          <span class="season-stat-label">Gold</span>
-          <div class="season-stat-cubes" aria-hidden="true">
-            <span class="season-cube season-cube--gold"></span>
-            <span class="season-cube season-cube--gold" style="transform: rotate(3deg)"></span>
-          </div>
-          <strong style="font-size: 1.1rem">×2</strong>
-        </div>
-        <div class="season-stat">
-          <span class="season-stat-label">Bronze</span>
-          <div class="season-stat-cubes" aria-hidden="true">
-            <span class="season-cube season-cube--bronze"></span>
-          </div>
-          <strong style="font-size: 1.1rem">×1</strong>
-        </div>
-        <div class="season-stat">
-          <span class="season-stat-label">Top‑5</span>
-          <div class="season-stat-cubes" aria-hidden="true">
-            <span class="season-cube season-cube--top5"></span>
-            <span class="season-cube season-cube--top5" style="transform: rotate(5deg)"></span>
-            <span class="season-cube season-cube--top5" style="transform: rotate(-3deg)"></span>
-          </div>
-          <strong style="font-size: 1.1rem">×5</strong>
-        </div>
-      </div>
+      <div id="season-summary-root" class="season-summary" aria-label="Season at a glance"></div>
 
       <div class="season-board-wrap">
         <table class="season-board">
-          <caption class="visually-hidden">Season placings by athlete and race round</caption>
+          <caption class="visually-hidden">Season placings by athlete and month (from saved results)</caption>
           <thead>
-            <tr>
-              <th scope="col">Athlete</th>
-              <th scope="col">
-                Round 1
-                <span class="season-round-sub">Cup — Apr</span>
-              </th>
-              <th scope="col">
-                Round 2
-                <span class="season-round-sub">Sprint — May</span>
-              </th>
-            </tr>
+            <tr id="season-board-head-row"></tr>
           </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Danik</th>
-              <td>
-                <span class="place-cube place-cube--gold" title="1st place"><span class="place-cube-medal" aria-hidden="true">🏆</span><span class="place-cube-n">1</span></span>
-              </td>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Mark</th>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-              <td>
-                <span class="place-cube place-cube--gold" title="1st place"><span class="place-cube-medal" aria-hidden="true">🏆</span><span class="place-cube-n">1</span></span>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Mihails</th>
-              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Aleksandrs</th>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Marks G</th>
-              <td>
-                <span class="place-cube place-cube--bronze" title="3rd place"><span class="place-cube-medal" aria-hidden="true">🥉</span><span class="place-cube-n">3</span></span>
-              </td>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-            </tr>
-            <tr>
-              <th scope="row">mini Mark</th>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Anastasiya</th>
-              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Ksenija</th>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Edvards</th>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-              <td><span class="place-cube place-cube--top5" title="5th place"><span class="place-cube-n">5</span></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Toms</th>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Kira</th>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-              <td><span class="place-cube place-cube--empty" aria-label="No placing yet"></span></td>
-            </tr>
-          </tbody>
+          <tbody id="season-board-tbody"></tbody>
         </table>
       </div>
 
-      <p class="hint" style="margin: -0.35rem 0 1rem; font-size: 0.78rem">Demo numbers for the season — edit the table in <code>index.html</code> after each race.</p>
+      <p class="hint" style="margin: -0.35rem 0 1rem; font-size: 0.78rem">Summary and grid follow <strong>admin / JSON</strong> data. Put month names in <strong>Date / stage</strong> (e.g. June, Jun, июнь) so results land in the right column; <strong>May</strong> or unclear dates go to <strong>Other</strong>.</p>
 
       <h3 class="season-subhead">Latest highlights</h3>
       <div id="weekend-results-root" class="results-grid"></div>
@@ -1055,6 +982,7 @@
   <script src="bus-config.js"></script>
   <script src="results-storage.js"></script>
   <script src="highlights-board.js"></script>
+  <script src="season-render.js"></script>
   <script src="results-render.js"></script>
   <script src="bus-board.js"></script>
 </body>
