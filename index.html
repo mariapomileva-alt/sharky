@@ -134,10 +134,16 @@
       text-wrap: balance;
     }
     .lead {
-      font-size: 1.05rem;
+      font-size: max(10px, calc(1.05rem * 0.5));
+      line-height: 1.25;
       color: var(--muted);
-      max-width: 46ch;
       margin: 0;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
     }
     main {
       position: relative;
@@ -698,19 +704,6 @@
       padding: 0.3rem 0.55rem;
       font-size: 0.72rem;
     }
-    .team-share-section .team-share-list {
-      margin: 0;
-      padding-left: 1.15rem;
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.55;
-    }
-    .team-share-section .team-share-list li {
-      margin-bottom: 0.65rem;
-    }
-    .team-share-section .team-share-list li:last-child {
-      margin-bottom: 0;
-    }
     footer {
       text-align: center;
       font-size: 0.8rem;
@@ -741,7 +734,7 @@
   </div>
   <header class="intro">
     <h1 class="page-title">Sharky Triathlon Team — one page for parents and athletes</h1>
-    <p class="lead">Calendar, links, photos, roster, and weekend cups. Add results in <a class="inline-link" href="admin-results.html">admin</a> (coach shares the PIN). <a class="inline-link" href="#for-team">How to share with the team →</a></p>
+    <p class="lead">Calendar, links, photos, roster &amp; weekend cups — <a class="inline-link" href="admin-results.html">admin</a> (coach PIN)</p>
   </header>
 
   <main>
@@ -776,9 +769,17 @@
           <tr><th>Athlete</th><th>Year</th><th>Parent contact</th></tr>
         </thead>
         <tbody>
-          <tr><td>Ivan Ivanov</td><td>2014</td><td>+371 …</td></tr>
-          <tr><td>Maria Petrova</td><td>2013</td><td>…</td></tr>
-          <tr><td>…</td><td>…</td><td>…</td></tr>
+          <tr><td>Danik</td><td>…</td><td>…</td></tr>
+          <tr><td>Mark</td><td>…</td><td>…</td></tr>
+          <tr><td>Mihails</td><td>…</td><td>…</td></tr>
+          <tr><td>Aleksandrs</td><td>…</td><td>…</td></tr>
+          <tr><td>Marks G</td><td>…</td><td>…</td></tr>
+          <tr><td>mini Mark</td><td>…</td><td>…</td></tr>
+          <tr><td>Anastasiya</td><td>…</td><td>…</td></tr>
+          <tr><td>Ksenija</td><td>…</td><td>…</td></tr>
+          <tr><td>Edvards</td><td>…</td><td>…</td></tr>
+          <tr><td>Toms</td><td>…</td><td>…</td></tr>
+          <tr><td>Kira</td><td>…</td><td>…</td></tr>
         </tbody>
       </table>
     </section>
@@ -795,16 +796,6 @@
         </tbody>
       </table>
       <p class="hint">Checkboxes do not sync across devices. Use a shared Google Sheet or a signup form for the whole team.</p>
-    </section>
-
-    <section class="span-2 team-share-section" id="for-team">
-      <h2>For your team <span class="tag">share</span></h2>
-      <ul class="team-share-list">
-        <li><strong>Give them one link</strong> — after you publish this site (e.g. GitHub Pages), send the main page URL in WhatsApp/Telegram. No app install.</li>
-        <li><strong>Weekend cups / results</strong> — they open <a class="inline-link" href="admin-results.html">admin-results.html</a> with the PIN you set in that file. Data lives in each browser unless you <strong>export / import JSON</strong> there so everyone matches.</li>
-        <li><strong>Trip bus seats</strong> — same link; with <code>useCloud: true</code> in <code>bus-config.js</code> + Supabase, everyone sees one bus. Otherwise seats are only on that device.</li>
-        <li><strong>Where awards are stored</strong> — in the browser’s <code>localStorage</code> key for results, or in the JSON file you share from admin; optional cloud for the bus is in your Supabase table <code>bus_board</code>.</li>
-      </ul>
     </section>
 
     <section class="span-2 bus-section bus-section--compact" aria-labelledby="bus-title">

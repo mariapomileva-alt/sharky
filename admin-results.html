@@ -73,7 +73,7 @@
     }
     label { display: block; font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin: 0.75rem 0 0.35rem; }
     label:first-of-type { margin-top: 0; }
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       padding: 0.55rem 0.65rem;
       border-radius: 10px;
@@ -162,6 +162,21 @@
     <div id="panel" hidden>
       <div class="card">
         <h2 style="font-family:Bricolage Grotesque,sans-serif;font-size:1.1rem;margin:0 0 1rem;">New entry</h2>
+        <label for="athletePreset">Team member</label>
+        <select id="athletePreset" autocomplete="off">
+          <option value="">Custom (type names below)</option>
+          <option value="1" data-first="Danik" data-last="">Danik</option>
+          <option value="2" data-first="Mark" data-last="">Mark</option>
+          <option value="3" data-first="Mihails" data-last="">Mihails</option>
+          <option value="4" data-first="Aleksandrs" data-last="">Aleksandrs</option>
+          <option value="5" data-first="Marks" data-last="G">Marks G</option>
+          <option value="6" data-first="mini Mark" data-last="">mini Mark</option>
+          <option value="7" data-first="Anastasiya" data-last="">Anastasiya</option>
+          <option value="8" data-first="Ksenija" data-last="">Ksenija</option>
+          <option value="9" data-first="Edvards" data-last="">Edvards</option>
+          <option value="10" data-first="Toms" data-last="">Toms</option>
+          <option value="11" data-first="Kira" data-last="">Kira</option>
+        </select>
         <div class="row2">
           <div>
             <label for="firstName">First name</label>
@@ -356,6 +371,13 @@
       if (e.key === "Enter") document.getElementById("unlockBtn").click();
     });
 
+    document.getElementById("athletePreset").addEventListener("change", function () {
+      var opt = this.options[this.selectedIndex];
+      if (!opt || !opt.getAttribute("data-first")) return;
+      document.getElementById("firstName").value = opt.getAttribute("data-first") || "";
+      document.getElementById("lastName").value = opt.getAttribute("data-last") || "";
+    });
+
     document.getElementById("addBtn").addEventListener("click", function () {
       var formErr = document.getElementById("formErr");
       var formOk = document.getElementById("formOk");
@@ -408,6 +430,7 @@
           window.TriResults.save(arr);
           document.getElementById("firstName").value = "";
           document.getElementById("lastName").value = "";
+          document.getElementById("athletePreset").value = "";
           document.getElementById("stage").value = "";
           document.getElementById("group").value = "";
           document.getElementById("result").value = "";
