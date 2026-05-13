@@ -172,21 +172,6 @@
         align-items: start;
       }
       .span-2 { grid-column: span 2; }
-      .race-entries-layout {
-        grid-template-columns: minmax(0, 1.1fr) minmax(14rem, 1fr);
-        gap: 1.5rem 1.75rem;
-      }
-      .race-entries-bus {
-        border-left: 1px solid rgba(10, 22, 40, 0.1);
-        padding-left: 1.35rem;
-        margin-top: 0;
-        padding-top: 0;
-        border-top: none;
-      }
-      .race-entries-section .bus-section--compact .bus-board {
-        margin-left: 0;
-        margin-right: 0;
-      }
     }
     section {
       border-radius: var(--radius);
@@ -273,29 +258,6 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--muted);
-    }
-    .check {
-      width: 1rem;
-      height: 1rem;
-      accent-color: var(--accent);
-    }
-    .race-entries-layout {
-      display: grid;
-      gap: 1.25rem;
-      align-items: start;
-    }
-    .race-entries-check {
-      min-width: 0;
-    }
-    .race-entries-bus {
-      min-width: 0;
-    }
-    @media (max-width: 899px) {
-      .race-entries-bus {
-        border-top: 1px solid rgba(10, 22, 40, 0.1);
-        padding-top: 1.15rem;
-        margin-top: 0.15rem;
-      }
     }
     @media (prefers-reduced-motion: reduce) {
       a.btn:hover { transform: none; }
@@ -915,73 +877,56 @@
       <p class="hint">To change the calendar embed: Google Calendar → calendar settings → Integrate calendar → copy the iframe <code>src</code> into the Calendar section on this page.</p>
     </section>
 
-    <section class="span-2 race-entries-section">
-      <h2>Race entries <span class="tag">checklist</span></h2>
-      <div class="race-entries-layout">
-        <div class="race-entries-check">
-          <table>
-            <thead>
-              <tr><th>Done</th><th>Race</th><th>Deadline</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><input class="check" type="checkbox" aria-label="Entry submitted" /></td><td>Cup …</td><td>Jun 15</td></tr>
-              <tr><td><input class="check" type="checkbox" aria-label="Entry submitted" /></td><td>…</td><td>…</td></tr>
-            </tbody>
-          </table>
-          <p class="hint">Checkboxes do not sync across devices. Use a shared Google Sheet or a signup form for the whole team.</p>
-        </div>
-        <div class="race-entries-bus">
-          <div class="bus-section bus-section--compact" aria-labelledby="bus-title">
-      <div class="section-head">
-        <h2 id="bus-title">Trip bus <span class="tag">9 seats</span> <span class="tag" id="bus-cloud-tag" hidden>live</span></h2>
-        <div class="bus-head-actions">
-          <button type="button" class="btn btn-compact" id="bus-sync-now" hidden>Refresh list</button>
-          <button type="button" class="btn btn-ghost btn-compact" id="bus-admin-reset" hidden>Admin: new trip</button>
-        </div>
-      </div>
-      <div class="bus-board">
-        <div class="bus-date-block">
-          <label for="bus-trip-date">Trip date</label>
-          <div class="bus-date-controls">
-            <input type="text" id="bus-trip-date" maxlength="120" placeholder="e.g. 22 June — race in Jūrmala" autocomplete="off" />
-            <button type="button" class="bus-mini bus-mini--primary" id="bus-trip-date-save">Save date</button>
-            <button type="button" class="bus-mini bus-mini--ghost" id="bus-trip-date-clear">Clear date</button>
-          </div>
-          <p class="bus-date-show" id="bus-date-show" hidden></p>
-        </div>
-        <div class="bus-vehicle">
-          <svg class="bus-vehicle-svg" viewBox="0 0 320 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <defs>
-              <linearGradient id="busRoof" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style="stop-color:#ffe066" />
-                <stop offset="100%" style="stop-color:#ffcc33" />
-              </linearGradient>
-            </defs>
-            <rect x="8" y="28" width="304" height="44" rx="14" fill="url(#busRoof)" stroke="#0a1628" stroke-width="2.5" />
-            <path d="M8 52 L8 62 Q8 72 22 72 L298 72 Q312 72 312 62 L312 52" fill="#ff6b2d" opacity="0.9" stroke="#0a1628" stroke-width="2" />
-            <rect x="22" y="36" width="52" height="22" rx="6" fill="#e8f7fc" stroke="#0a1628" stroke-width="1.5" />
-            <text x="48" y="51" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="800" fill="#0a1628">BUS</text>
-            <circle cx="52" cy="78" r="10" fill="#222" stroke="#0a1628" stroke-width="2" />
-            <circle cx="268" cy="78" r="10" fill="#222" stroke="#0a1628" stroke-width="2" />
-            <circle cx="52" cy="78" r="4" fill="#666" />
-            <circle cx="268" cy="78" r="4" fill="#666" />
-            <path d="M268 36 L298 36 Q306 36 306 44 L306 58 Q306 64 298 64 L268 64 Z" fill="#7ec8e8" stroke="#0a1628" stroke-width="1.5" />
-          </svg>
-        </div>
-        <div class="bus-seats-wrap">
-          <div class="bus-body-panel">
-            <div class="bus-windshield">PASSENGERS</div>
-            <div class="bus-seat-grid" id="bus-seat-grid" role="list"></div>
-          </div>
-          <div class="bus-wheels" aria-hidden="true">
-            <div class="bus-wheel"></div>
-            <div class="bus-wheel"></div>
+    <section class="span-2">
+      <div class="bus-section bus-section--compact" aria-labelledby="bus-title">
+        <div class="section-head">
+          <h2 id="bus-title">Trip bus <span class="tag">9 seats</span> <span class="tag" id="bus-cloud-tag" hidden>live</span></h2>
+          <div class="bus-head-actions">
+            <button type="button" class="btn btn-compact" id="bus-sync-now" hidden>Refresh list</button>
+            <button type="button" class="btn btn-ghost btn-compact" id="bus-admin-reset" hidden>Admin: new trip</button>
           </div>
         </div>
-      </div>
-      <p class="hint" id="bus-sync-hint"></p>
+        <div class="bus-board">
+          <div class="bus-date-block">
+            <label for="bus-trip-date">Trip date</label>
+            <div class="bus-date-controls">
+              <input type="text" id="bus-trip-date" maxlength="120" placeholder="e.g. 22 June — race in Jūrmala" autocomplete="off" />
+              <button type="button" class="bus-mini bus-mini--primary" id="bus-trip-date-save">Save date</button>
+              <button type="button" class="bus-mini bus-mini--ghost" id="bus-trip-date-clear">Clear date</button>
+            </div>
+            <p class="bus-date-show" id="bus-date-show" hidden></p>
+          </div>
+          <div class="bus-vehicle">
+            <svg class="bus-vehicle-svg" viewBox="0 0 320 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="busRoof" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" style="stop-color:#ffe066" />
+                  <stop offset="100%" style="stop-color:#ffcc33" />
+                </linearGradient>
+              </defs>
+              <rect x="8" y="28" width="304" height="44" rx="14" fill="url(#busRoof)" stroke="#0a1628" stroke-width="2.5" />
+              <path d="M8 52 L8 62 Q8 72 22 72 L298 72 Q312 72 312 62 L312 52" fill="#ff6b2d" opacity="0.9" stroke="#0a1628" stroke-width="2" />
+              <rect x="22" y="36" width="52" height="22" rx="6" fill="#e8f7fc" stroke="#0a1628" stroke-width="1.5" />
+              <text x="48" y="51" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="11" font-weight="800" fill="#0a1628">BUS</text>
+              <circle cx="52" cy="78" r="10" fill="#222" stroke="#0a1628" stroke-width="2" />
+              <circle cx="268" cy="78" r="10" fill="#222" stroke="#0a1628" stroke-width="2" />
+              <circle cx="52" cy="78" r="4" fill="#666" />
+              <circle cx="268" cy="78" r="4" fill="#666" />
+              <path d="M268 36 L298 36 Q306 36 306 44 L306 58 Q306 64 298 64 L268 64 Z" fill="#7ec8e8" stroke="#0a1628" stroke-width="1.5" />
+            </svg>
+          </div>
+          <div class="bus-seats-wrap">
+            <div class="bus-body-panel">
+              <div class="bus-windshield">PASSENGERS</div>
+              <div class="bus-seat-grid" id="bus-seat-grid" role="list"></div>
+            </div>
+            <div class="bus-wheels" aria-hidden="true">
+              <div class="bus-wheel"></div>
+              <div class="bus-wheel"></div>
+            </div>
           </div>
         </div>
+        <p class="hint" id="bus-sync-hint"></p>
       </div>
     </section>
 
